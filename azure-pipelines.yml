@@ -32,6 +32,16 @@ steps:
     ConnectedServiceNameARM: MSDN
     resourceGroupName: '$(resource_group_tfstate)'
 
+- task: qetza.replacetokens.replacetokens-task.replacetokens@3
+  displayName: 'Replace tokens in **/*.tfvars'
+  inputs:
+    rootDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/storage-account'
+    targetFiles: '**/*.tfvars'
+    escapeType: none
+    tokenPrefix: '__'
+    tokenSuffix: '__'
+    enableTelemetry: false
+
 - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
   displayName: 'Install Terraform 0.12.29'
   inputs:
