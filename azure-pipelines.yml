@@ -9,11 +9,41 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+pool:
+  name: Azure Pipelines
+#Your build pipeline references an undefined variable named ‘ARM_uniqueStorageAccountName’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+variables:
+  resource_group_tfstate: '$(shortcode)-tfstate-rg'
+  location: 'uksouth'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+steps:
+- task: AzureResourceManagerTemplateDeployment@3
+  displayName: 'ARM Template deployment: Resource Group scope'
+  inputs:
+    azureResourceManagerConnection: ''
+    subscriptionId: ''
+    resourceGroupName: '$(resource_group_tfstate)'
+    location: '$(location)'
+    csmFile: sometemplate
+
+- task: keesschollaart.arm-outputs.arm-outputs.ARM Outputs@6
+  displayName: 'ARM Outputs'
+  inputs:
+    ConnectedServiceNameARM: MSDN
+    resourceGroupName: '$(resource_group_tfstate)'
+
+- task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
+  displayName: 'Install Terraform 0.12.29'
+  inputs:
+    terraformVersion: 0.12.29
+
+- task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV1@0
+  displayName: 'Terraform : azurerm'
+  inputs:
+    workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure'
+    backendServiceArm: MSDN
+    backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
+    backendAzureRmStorageAccountName: '$(ARM_uniqueStorageAccountName)'
+    backendAzureRmContainerName: tfstate
+    backendAzureRmKey: tf
+
