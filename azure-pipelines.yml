@@ -9,9 +9,6 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-pool:
-  name: Azure Pipelines
-#Your build pipeline references an undefined variable named ‘ARM_uniqueStorageAccountName’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
 variables:
   resource_group_tfstate: '$(shortcode)-tfstate-rg'
   location: 'uksouth'
@@ -20,16 +17,16 @@ steps:
 - task: AzureResourceManagerTemplateDeployment@3
   displayName: 'ARM Template deployment: Resource Group scope'
   inputs:
-    azureResourceManagerConnection: ''
-    subscriptionId: ''
+    azureResourceManagerConnection: $(armConnection)
+    subscriptionId: '$(subscription_id)'
     resourceGroupName: '$(resource_group_tfstate)'
     location: '$(location)'
-    csmFile: sometemplate
+    csmFile: $(System.DefaultWorkingDirectory)/infrastructure/backend/tfbackend.deploy.json
 
 - task: keesschollaart.arm-outputs.arm-outputs.ARM Outputs@6
   displayName: 'ARM Outputs'
   inputs:
-    ConnectedServiceNameARM: MSDN
+    ConnectedServiceNameARM: $(armConnection)
     resourceGroupName: '$(resource_group_tfstate)'
 
 - task: qetza.replacetokens.replacetokens-task.replacetokens@3
@@ -50,8 +47,8 @@ steps:
 - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV1@0
   displayName: 'Terraform : azurerm'
   inputs:
-    workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure'
-    backendServiceArm: MSDN
+    workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/storage-account'
+    backendServiceArm: $(armConnection)
     backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
     backendAzureRmStorageAccountName: '$(ARM_uniqueStorageAccountName)'
     backendAzureRmContainerName: tfstate
