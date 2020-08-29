@@ -98,7 +98,7 @@ steps:
 - task: AzureFileCopy@3
   inputs:
     SourcePath: '$(System.DefaultWorkingDirectory)/code'
-    azureSubscription: 'MSDN'
+    azureSubscription: '$(armConnection)'
     Destination: 'AzureBlob'
     storage: 'staticsitelgdevuksstor'
     ContainerName: '$web'
