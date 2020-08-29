@@ -41,8 +41,7 @@ jobs:
     inputs:
       ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
       ConnectedServiceNameARM: '$(armConnection)'
-      resourceGroupName: '$(resource_group_tfstate)'
-      prefix: 'ARM'
+      resourceGroupName: '$(resource_group_tfstate)'      
       whenLastDeploymentIsFailed: 'fail'
 
   - task: qetza.replacetokens.replacetokens-task.replacetokens@3
@@ -57,7 +56,7 @@ jobs:
 
   - task: CmdLine@2
     inputs:
-      script: 'echo $StorageAccountName'
+      script: 'echo $StorageAccountName && env'
 
   - task: TerraformInstaller@0
     displayName: 'Install Terraform 0.12.29'
