@@ -23,7 +23,6 @@ steps:
     location: '$(location)'
     templateLocation: 'Linked artifact'
     csmFile: '$(System.DefaultWorkingDirectory)/infrastructure/backend/tfbackend.deploy.json'
-    csmParametersFile: '$(System.DefaultWorkingDirectory)/infrastructure/backend/tfbackend.deploy.parameters.json'
     deploymentMode: 'Incremental'
 
 - task: keesschollaart.arm-outputs.arm-outputs.ARM Outputs@6
