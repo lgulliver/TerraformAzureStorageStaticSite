@@ -43,6 +43,10 @@ steps:
     tokenSuffix: '__'
     enableTelemetry: false
 
+- task: CmdLine@2
+  inputs:
+    script: 'cat $(System.DefaultWorkingDirectory)/infrastructure/storage-account/az-storage-account-variables.tfvars'
+
 - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
   displayName: 'Install Terraform 0.12.29'
   inputs:
@@ -53,8 +57,8 @@ steps:
   inputs:
     workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/storage-account'
     backendServiceArm: $(armConnection)
-    backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
-    backendAzureRmStorageAccountName: '$(ARM_\StorageAccountName)'
+    backendAzureRmResourceGroupName: 'tfstate-uks-rg'
+    backendAzureRmStorageAccountName: '$(ARM_StorageAccountName)'
     backendAzureRmContainerName: tfstate
     backendAzureRmKey: tf
 
