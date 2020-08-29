@@ -52,7 +52,7 @@ steps:
     workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/storage-account'
     backendServiceArm: $(armConnection)
     backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
-    backendAzureRmStorageAccountName: '$(ARM_uniqueStorageAccountName)'
+    backendAzureRmStorageAccountName: '$(ARM_\StorageAccountName)'
     backendAzureRmContainerName: tfstate
     backendAzureRmKey: tf
 
