@@ -1,5 +1,5 @@
 location = "__location__"
 location_short_code = "__location_short_code__"
-environment = "__release_environmentname__"
+environment = "__environment__"
 shortcode = "__shortcode__"
 product = "__product__"
