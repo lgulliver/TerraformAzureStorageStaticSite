@@ -31,7 +31,7 @@ steps:
   displayName: 'ARM Outputs'
   inputs:
     ConnectedServiceNameARM: $(armConnection)
-    resourceGroupName: '$(resource_group_tfstate)'
+    resourceGroupName: 'tfstate-uks-rg'
 
 - task: qetza.replacetokens.replacetokens-task.replacetokens@3
   displayName: 'Replace tokens in **/*.tfvars'
