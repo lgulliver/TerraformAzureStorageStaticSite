@@ -57,7 +57,7 @@ jobs:
 
   - task: CmdLine@2
     inputs:
-      script: 'cat $(System.DefaultWorkingDirectory)/infrastructure/storage-account/az-storage-account-variables.tfvars'
+      script: 'echo $StorageAccountName'
 
   - task: TerraformInstaller@0
     displayName: 'Install Terraform 0.12.29'
