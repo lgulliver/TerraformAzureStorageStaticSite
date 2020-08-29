@@ -73,7 +73,7 @@ jobs:
       commandOptions: '-backend-config=$(System.DefaultWorkingDirectory)/infrastructure/storage-account/az-storage-account-variables.tfvars'
       backendServiceArm: '$(armConnection)'
       backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
-      backendAzureRmStorageAccountName: '$(ARM_StorageAccountName)'
+      backendAzureRmStorageAccountName: '$(storageAccountName)'
       backendAzureRmContainerName: '$(backendAzureRmContainerName)'
       backendAzureRmKey: '$(backendAzureRmKey)'
 
@@ -87,7 +87,7 @@ jobs:
       environmentServiceNameAzureRM: '$(armConnection)'
       backendServiceArm: '$(armConnection)'
       backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
-      backendAzureRmStorageAccountName: '$(ARM_StorageAccountName)'
+      backendAzureRmStorageAccountName: '$(storageAccountName)'
       backendAzureRmContainerName: $(backendAzureRmContainerName)
       backendAzureRmKey: '$(backendAzureRmKey)'
 
@@ -101,7 +101,7 @@ jobs:
       environmentServiceNameAzureRM: '$(armConnection)'
       backendServiceArm: '$(armConnection)'
       backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
-      backendAzureRmStorageAccountName: '$(ARM_StorageAccountName)'
+      backendAzureRmStorageAccountName: '$(storageAccountName)'
       backendAzureRmContainerName: $(backendAzureRmContainerName)
       backendAzureRmKey: '$(backendAzureRmKey)'
 
