@@ -10,8 +10,12 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  resource_group_tfstate: '$(shortcode)-tfstate-rg'
+  resource_group_tfstate: 'tfstate-uks-rg'
   location: 'uksouth'
+  product: 'lg'
+  shortcode: 'staticsite'
+  environment: 'dev'
+  location_short_code: 'uks'
 
 steps:
 - task: AzureResourceManagerTemplateDeployment@3
