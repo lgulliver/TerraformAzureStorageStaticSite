@@ -36,17 +36,7 @@
         "name": "[parameters('storageAccountType')]"
       },
       "kind": "StorageV2",
-      "properties": {},
-      "resources": [
-        {
-          "name": "default/tfstate",
-          "type": "containers",
-          "apiVersion": "2019-04-01",
-          "dependsOn": [
-            "[variables('storageAccountName')]"
-          ]
-        }
-      ]
+      "properties": {}
     }
   ],
   "outputs": {
