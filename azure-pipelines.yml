@@ -62,11 +62,14 @@ steps:
 - task: TerraformTaskV1@0
   displayName: 'Terraform : azurerm'
   inputs:
+    provider: 'azurerm'
+    command: 'init'
     workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/storage-account'
-    backendServiceArm: $(armConnection)
+    commandOptions: '-backend-config=$(System.DefaultWorkingDirectory)/infrastructure/storage-account/az-storage-account-variables.tfvars'
+    backendServiceArm: '$(armConnection)'
     backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
     backendAzureRmStorageAccountName: '$(ARM_StorageAccountName)'
-    backendAzureRmContainerName: $(backendAzureRmContainerName)
+    backendAzureRmContainerName: '$(backendAzureRmContainerName)'
     backendAzureRmKey: '$(backendAzureRmKey)'
 
 - task: TerraformTaskV1@0
