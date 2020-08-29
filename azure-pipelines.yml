@@ -60,7 +60,7 @@ steps:
     terraformVersion: 0.12.29
 
 - task: TerraformTaskV1@0
-  displayName: 'Terraform : azurerm'
+  displayName: 'Terraform init'
   inputs:
     provider: 'azurerm'
     command: 'init'
@@ -73,6 +73,7 @@ steps:
     backendAzureRmKey: '$(backendAzureRmKey)'
 
 - task: TerraformTaskV1@0
+  displayName: 'Terraform plan'
   inputs:
     provider: 'azurerm'
     command: 'plan'
@@ -86,6 +87,7 @@ steps:
     backendAzureRmKey: '$(backendAzureRmKey)'
 
 - task: TerraformTaskV1@0
+  displayName: 'Terraform apply'
   inputs:
     provider: 'azurerm'
     command: 'apply'
