@@ -9,8 +9,8 @@ trigger:
 variables:
   resource_group_tfstate: 'tfstate-uks-rg'
   location: 'uksouth'
-  product: 'lg'
-  shortcode: 'staticsite'
+  product: 'staticsite'
+  shortcode: 'lg'
   environment_name: 'dev'
   location_short_code: 'uks'
   backendAzureRmResourceGroupName: 'tfstate-uks-rg'  
