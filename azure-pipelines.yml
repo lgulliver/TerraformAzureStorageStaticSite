@@ -16,6 +16,9 @@ variables:
   shortcode: 'staticsite'
   environment: 'dev'
   location_short_code: 'uks'
+  backendAzureRmResourceGroupName: 'tfstate-uks-rg'  
+  backendAzureRmContainerName: tfstate
+  backendAzureRmKey: tf
 
 steps:
 - task: AzureResourceManagerTemplateDeployment@3
@@ -51,18 +54,43 @@ steps:
   inputs:
     script: 'cat $(System.DefaultWorkingDirectory)/infrastructure/storage-account/az-storage-account-variables.tfvars'
 
-- task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
+- task: TerraformInstaller@0
   displayName: 'Install Terraform 0.12.29'
   inputs:
     terraformVersion: 0.12.29
 
-- task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV1@0
+- task: TerraformTaskV1@0
   displayName: 'Terraform : azurerm'
   inputs:
     workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/storage-account'
     backendServiceArm: $(armConnection)
-    backendAzureRmResourceGroupName: 'tfstate-uks-rg'
+    backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
     backendAzureRmStorageAccountName: '$(ARM_StorageAccountName)'
-    backendAzureRmContainerName: tfstate
-    backendAzureRmKey: tf
+    backendAzureRmContainerName: $(backendAzureRmContainerName)
+    backendAzureRmKey: '$(backendAzureRmKey)'
 
+- task: TerraformTaskV1@0
+  inputs:
+    provider: 'azurerm'
+    command: 'plan'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/storage-account'
+    commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/infrastructure/storage-account/az-storage-account-variables.tfvars" --out=planfile'
+    environmentServiceNameAzureRM: '$(armConnection)'
+    backendServiceArm: '$(armConnection)'
+    backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
+    backendAzureRmStorageAccountName: '$(ARM_StorageAccountName)'
+    backendAzureRmContainerName: $(backendAzureRmContainerName)
+    backendAzureRmKey: '$(backendAzureRmKey)'
+
+- task: TerraformTaskV1@0
+  inputs:
+    provider: 'azurerm'
+    command: 'apply'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/storage-account'
+    commandOptions: '-auto-approve planfile'
+    environmentServiceNameAzureRM: '$(armConnection)'
+    backendServiceArm: '$(armConnection)'
+    backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
+    backendAzureRmStorageAccountName: '$(ARM_StorageAccountName)'
+    backendAzureRmContainerName: $(backendAzureRmContainerName)
+    backendAzureRmKey: '$(backendAzureRmKey)'
