@@ -11,7 +11,7 @@ variables:
   location: 'uksouth'
   product: 'lg'
   shortcode: 'staticsite'
-  environment: 'dev'
+  environment_name: 'dev'
   location_short_code: 'uks'
   backendAzureRmResourceGroupName: 'tfstate-uks-rg'  
   backendAzureRmContainerName: tfstate
