@@ -1,3 +1,7 @@
+terraform {
+  backend "azurerm" {}
+}
+
 locals {
     env_prefix = "${var.shortcode}-${var.product}-${var.environment}-${var.location_short_code}"
     env_prefix_no_separator = "${var.shortcode}${var.product}${var.environment}${var.location_short_code}"
