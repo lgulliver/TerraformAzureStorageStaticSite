@@ -116,5 +116,5 @@ jobs:
       SourcePath: '$(System.DefaultWorkingDirectory)/code'
       azureSubscription: '$(armConnection)'
       Destination: 'AzureBlob'
-      storage: 'staticsitelgdevuksstor'
+      storage: 'lgstaticsiteuksstor'
       ContainerName: '$web'
