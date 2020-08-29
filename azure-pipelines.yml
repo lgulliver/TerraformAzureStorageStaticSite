@@ -94,3 +94,11 @@ steps:
     backendAzureRmStorageAccountName: '$(ARM_StorageAccountName)'
     backendAzureRmContainerName: $(backendAzureRmContainerName)
     backendAzureRmKey: '$(backendAzureRmKey)'
+
+- task: AzureFileCopy@3
+  inputs:
+    SourcePath: '$(System.DefaultWorkingDirectory)/code'
+    azureSubscription: 'MSDN'
+    Destination: 'AzureBlob'
+    storage: 'staticsitelgdevuksstor'
+    ContainerName: '$web'
