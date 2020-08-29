@@ -12,7 +12,6 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 
   tags = {
-    environment = var.environment
     product = var.product      
   }
 }
@@ -31,7 +30,6 @@ resource "azurerm_storage_account" "static_storage" {
   }
 
   tags = {
-    environment = var.environment
     product = var.product
   }
 }
