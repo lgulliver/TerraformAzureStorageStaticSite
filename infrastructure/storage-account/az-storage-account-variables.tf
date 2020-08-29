@@ -5,9 +5,6 @@ variable "location" {
 variable "location_short_code" {
     type = string
 }
-variable "environment" {
-    type = string
-}
 variable "shortcode" {
     type = string
 }
