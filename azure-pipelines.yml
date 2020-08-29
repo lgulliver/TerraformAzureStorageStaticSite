@@ -31,17 +31,19 @@ jobs:
       azureResourceManagerConnection: '$(armConnection)'
       subscriptionId: '$(subscription_id)'
       action: 'Create Or Update Resource Group'
-      resourceGroupName: 'tfstate-uks-rg'
+      resourceGroupName: '$(resource_group_tfstate)'
       location: '$(location)'
       templateLocation: 'Linked artifact'
       csmFile: '$(System.DefaultWorkingDirectory)/infrastructure/backend/tfbackend.deploy.json'
       deploymentMode: 'Incremental'
 
-  - task: keesschollaart.arm-outputs.arm-outputs.ARM Outputs@6
-    displayName: 'ARM Outputs'
+  - task: ARM Outputs@6
     inputs:
-      ConnectedServiceNameARM: $(armConnection)
-      resourceGroupName: 'tfstate-uks-rg'
+      ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
+      ConnectedServiceNameARM: '$(armConnection)'
+      resourceGroupName: '$(resource_group_tfstate)'
+      prefix: 'ARM'
+      whenLastDeploymentIsFailed: 'fail'
 
   - task: qetza.replacetokens.replacetokens-task.replacetokens@3
     displayName: 'Replace tokens in **/*.tfvars'
