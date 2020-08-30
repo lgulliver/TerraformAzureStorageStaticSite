@@ -9,8 +9,7 @@ trigger:
 variables:
   resource_group_tfstate: 'tfstate-uks-rg'
   product: 'staticsite'
-  shortcode: 'lg'
-  backendAzureRmResourceGroupName: 'tfstate-uks-rg'  
+  shortcode: 'lg'  
 
 stages:
 - stage: dev
@@ -57,10 +56,6 @@ stages:
         tokenPrefix: '__'
         tokenSuffix: '__'
         enableTelemetry: false
-
-    - task: CmdLine@2
-      inputs:
-        script: 'echo $StorageAccountName && env'
 
     - task: TerraformInstaller@0
       displayName: 'Install Terraform 0.12.29'
@@ -120,5 +115,5 @@ stages:
         SourcePath: '$(System.DefaultWorkingDirectory)/code'
         azureSubscription: '$(armConnection)'
         Destination: 'AzureBlob'
-        storage: 'lgstaticsiteuksstor'
+        storage: '$(shortcode)$(product)$(environment_name)$(location_short_code)stor'
         ContainerName: '$web'
