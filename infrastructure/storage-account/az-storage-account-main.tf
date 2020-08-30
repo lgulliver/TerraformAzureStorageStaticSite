@@ -3,8 +3,8 @@ terraform {
 }
 
 locals {
-    env_prefix = "${var.shortcode}-${var.product}-${var.location_short_code}"
-    env_prefix_no_separator = "${var.shortcode}${var.product}${var.location_short_code}"
+    env_prefix = "${var.shortcode}-${var.product}--${var.envname}-${var.location_short_code}"
+    env_prefix_no_separator = "${var.shortcode}${var.product}${var.envname}${var.location_short_code}"
 }
 
 resource "azurerm_resource_group" "rg" {
