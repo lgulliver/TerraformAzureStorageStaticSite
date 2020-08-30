@@ -18,7 +18,7 @@ stages:
     environment_name: 'dev'
     location_short_code: 'uks'
     backendAzureRmContainerName: tfstate
-    backendAzureRmKey: tfdev
+    backendAzureRmKey: tfdev  
 
   jobs:
   - job: Infrastructure
@@ -126,7 +126,7 @@ stages:
     environment_name: 'prod'
     location_short_code: 'uks'
     backendAzureRmContainerName: tfstate
-    backendAzureRmKey: tfdev
+    backendAzureRmKey: tfprod
 
   jobs:
   - job: Infrastructure
