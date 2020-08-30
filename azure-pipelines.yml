@@ -8,113 +8,117 @@ trigger:
 
 variables:
   resource_group_tfstate: 'tfstate-uks-rg'
-  location: 'uksouth'
   product: 'staticsite'
   shortcode: 'lg'
-  environment_name: 'dev'
-  location_short_code: 'uks'
   backendAzureRmResourceGroupName: 'tfstate-uks-rg'  
-  backendAzureRmContainerName: tfstate
-  backendAzureRmKey: tf
 
-jobs:
-- job: Infrastructure
-  displayName: 'Infrastructure'
-  pool:
-    vmImage: 'ubuntu-latest'
+stages:
+- stage: dev
+  variables:    
+    location: 'uksouth'        
+    environment_name: 'dev'
+    location_short_code: 'uks'
+    backendAzureRmContainerName: tfstate
+    backendAzureRmKey: tfdev
 
-  steps:
-  - task: AzureResourceManagerTemplateDeployment@3
-    displayName: 'ARM Template deployment: Resource Group scope'
-    inputs:
-      deploymentScope: 'Resource Group'
-      azureResourceManagerConnection: '$(armConnection)'
-      subscriptionId: '$(subscription_id)'
-      action: 'Create Or Update Resource Group'
-      resourceGroupName: '$(resource_group_tfstate)'
-      location: '$(location)'
-      templateLocation: 'Linked artifact'
-      csmFile: '$(System.DefaultWorkingDirectory)/infrastructure/backend/tfbackend.deploy.json'
-      deploymentMode: 'Incremental'
+  jobs:
+  - job: Infrastructure
+    displayName: 'Infrastructure'
+    pool:
+      vmImage: 'ubuntu-latest'
 
-  - task: ARM Outputs@6
-    inputs:
-      ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
-      ConnectedServiceNameARM: '$(armConnection)'
-      resourceGroupName: '$(resource_group_tfstate)'      
-      whenLastDeploymentIsFailed: 'fail'
+    steps:
+    - task: AzureResourceManagerTemplateDeployment@3
+      displayName: 'ARM Template deployment: Resource Group scope'
+      inputs:
+        deploymentScope: 'Resource Group'
+        azureResourceManagerConnection: '$(armConnection)'
+        subscriptionId: '$(subscription_id)'
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: '$(resource_group_tfstate)'
+        location: '$(location)'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(System.DefaultWorkingDirectory)/infrastructure/backend/tfbackend.deploy.json'
+        deploymentMode: 'Incremental'
 
-  - task: qetza.replacetokens.replacetokens-task.replacetokens@3
-    displayName: 'Replace tokens in **/*.tfvars'
-    inputs:
-      rootDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/storage-account'
-      targetFiles: '**/*.tfvars'
-      escapeType: none
-      tokenPrefix: '__'
-      tokenSuffix: '__'
-      enableTelemetry: false
+    - task: ARM Outputs@6
+      inputs:
+        ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
+        ConnectedServiceNameARM: '$(armConnection)'
+        resourceGroupName: '$(resource_group_tfstate)'      
+        whenLastDeploymentIsFailed: 'fail'
 
-  - task: CmdLine@2
-    inputs:
-      script: 'echo $StorageAccountName && env'
+    - task: qetza.replacetokens.replacetokens-task.replacetokens@3
+      displayName: 'Replace tokens in **/*.tfvars'
+      inputs:
+        rootDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/storage-account'
+        targetFiles: '**/*.tfvars'
+        escapeType: none
+        tokenPrefix: '__'
+        tokenSuffix: '__'
+        enableTelemetry: false
 
-  - task: TerraformInstaller@0
-    displayName: 'Install Terraform 0.12.29'
-    inputs:
-      terraformVersion: 0.12.29
+    - task: CmdLine@2
+      inputs:
+        script: 'echo $StorageAccountName && env'
 
-  - task: TerraformTaskV1@0
-    displayName: 'Terraform init'
-    inputs:
-      provider: 'azurerm'
-      command: 'init'
-      workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/storage-account'
-      commandOptions: '-backend-config=$(System.DefaultWorkingDirectory)/infrastructure/storage-account/az-storage-account-variables.tfvars'
-      backendServiceArm: '$(armConnection)'
-      backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
-      backendAzureRmStorageAccountName: '$(storageAccountName)'
-      backendAzureRmContainerName: '$(backendAzureRmContainerName)'
-      backendAzureRmKey: '$(backendAzureRmKey)'
+    - task: TerraformInstaller@0
+      displayName: 'Install Terraform 0.12.29'
+      inputs:
+        terraformVersion: 0.12.29
 
-  - task: TerraformTaskV1@0
-    displayName: 'Terraform plan'
-    inputs:
-      provider: 'azurerm'
-      command: 'plan'
-      workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/storage-account'
-      commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/infrastructure/storage-account/az-storage-account-variables.tfvars" --out=planfile'
-      environmentServiceNameAzureRM: '$(armConnection)'
-      backendServiceArm: '$(armConnection)'
-      backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
-      backendAzureRmStorageAccountName: '$(storageAccountName)'
-      backendAzureRmContainerName: $(backendAzureRmContainerName)
-      backendAzureRmKey: '$(backendAzureRmKey)'
+    - task: TerraformTaskV1@0
+      displayName: 'Terraform init'
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/storage-account'
+        commandOptions: '-backend-config=$(System.DefaultWorkingDirectory)/infrastructure/storage-account/az-storage-account-variables.tfvars'
+        backendServiceArm: '$(armConnection)'
+        backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
+        backendAzureRmStorageAccountName: '$(storageAccountName)'
+        backendAzureRmContainerName: '$(backendAzureRmContainerName)'
+        backendAzureRmKey: '$(backendAzureRmKey)'
 
-  - task: TerraformTaskV1@0
-    displayName: 'Terraform apply'
-    inputs:
-      provider: 'azurerm'
-      command: 'apply'
-      workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/storage-account'
-      commandOptions: '-auto-approve planfile'
-      environmentServiceNameAzureRM: '$(armConnection)'
-      backendServiceArm: '$(armConnection)'
-      backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
-      backendAzureRmStorageAccountName: '$(storageAccountName)'
-      backendAzureRmContainerName: $(backendAzureRmContainerName)
-      backendAzureRmKey: '$(backendAzureRmKey)'
+    - task: TerraformTaskV1@0
+      displayName: 'Terraform plan'
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/storage-account'
+        commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/infrastructure/storage-account/az-storage-account-variables.tfvars" --out=planfile'
+        environmentServiceNameAzureRM: '$(armConnection)'
+        backendServiceArm: '$(armConnection)'
+        backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
+        backendAzureRmStorageAccountName: '$(storageAccountName)'
+        backendAzureRmContainerName: $(backendAzureRmContainerName)
+        backendAzureRmKey: '$(backendAzureRmKey)'
 
-- job: Deploy
-  displayName: 'Deploy'
-  pool:
-    vmImage: 'windows-latest'
-  dependsOn: 'Infrastructure'
+    - task: TerraformTaskV1@0
+      displayName: 'Terraform apply'
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/infrastructure/storage-account'
+        commandOptions: '-auto-approve planfile'
+        environmentServiceNameAzureRM: '$(armConnection)'
+        backendServiceArm: '$(armConnection)'
+        backendAzureRmResourceGroupName: '$(resource_group_tfstate)'
+        backendAzureRmStorageAccountName: '$(storageAccountName)'
+        backendAzureRmContainerName: $(backendAzureRmContainerName)
+        backendAzureRmKey: '$(backendAzureRmKey)'
 
-  steps:    
-  - task: AzureFileCopy@3
-    inputs:
-      SourcePath: '$(System.DefaultWorkingDirectory)/code'
-      azureSubscription: '$(armConnection)'
-      Destination: 'AzureBlob'
-      storage: 'lgstaticsiteuksstor'
-      ContainerName: '$web'
+  - job: Deploy
+    displayName: 'Deploy'
+    pool:
+      vmImage: 'windows-latest'
+    dependsOn: 'Infrastructure'
+
+    steps:    
+    - task: AzureFileCopy@3
+      inputs:
+        SourcePath: '$(System.DefaultWorkingDirectory)/code'
+        azureSubscription: '$(armConnection)'
+        Destination: 'AzureBlob'
+        storage: 'lgstaticsiteuksstor'
+        ContainerName: '$web'
