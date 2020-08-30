@@ -11,3 +11,6 @@ variable "shortcode" {
 variable "product" {
     type = string
 }
+variable "envname" {
+    type = string
+}
