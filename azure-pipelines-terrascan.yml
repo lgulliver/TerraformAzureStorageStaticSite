@@ -1,0 +1,19 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+
+- script: |
+    curl --location https://github.com/accurics/terrascan/releases/download/v1.2.0/terrascan_1.2.0_Linux_x86_64.tar.gz --output terrascan.tar.gz
+    tar -xvf terrascan.tar.gz
+    install terrascan /usr/local/bin
+    terrascan
+  displayName: 'Get tools'
