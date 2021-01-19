@@ -27,7 +27,7 @@ steps:
   continueOnError: true
   inputs:
     testResultsFormat: 'JUnit'
-    testResultsFiles: '**/result.xml'
+    testResultsFiles: '**/*.xml'
     mergeTestResults: true
     failTaskOnFailedTests: true
     testRunTitle: 'Terrascan results'
