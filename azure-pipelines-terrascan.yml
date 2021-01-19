@@ -31,4 +31,4 @@ steps:
     mergeTestResults: true
     failTaskOnFailedTests: true
     testRunTitle: 'Terrascan results'
-  
+  displayName: 'Publish reults'
