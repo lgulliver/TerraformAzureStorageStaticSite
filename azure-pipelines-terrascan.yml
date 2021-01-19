@@ -18,6 +18,6 @@ steps:
   displayName: 'Get tools'
 
 - script: |
-    terrascan scan -t azure -i terraform -o xml > result.xml
+    terrascan scan -t azure -i terraform -o xml
   workingDirectory: $(System.DefaultWorkingDirectory)/infrastructure/storage-account
   displayName: 'Run terrascan'
