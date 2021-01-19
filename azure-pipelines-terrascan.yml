@@ -19,3 +19,5 @@ steps:
 
 - script: |
     terrascan scan -t azure -i terraform -o xml > result.xml
+  workingDirectory: $(System.DefaultWorkingDirectory)/infrastructure
+  displayName: 'Run terrascan'
