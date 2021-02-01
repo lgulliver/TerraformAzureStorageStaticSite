@@ -12,7 +12,7 @@ pool:
 steps:
 
 - script: |
-    curl --location https://github.com/accurics/terrascan/releases/download/v1.2.0/terrascan_1.2.0_Linux_x86_64.tar.gz --output terrascan.tar.gz
+    curl --location https://github.com/accurics/terrascan/releases/download/v1.3.1terrascan_1.3.1_Linux_x86_64.tar.gz --output terrascan.tar.gz
     tar -xvf terrascan.tar.gz
     sudo install terrascan /usr/local/bin    
   displayName: 'Get tools'
