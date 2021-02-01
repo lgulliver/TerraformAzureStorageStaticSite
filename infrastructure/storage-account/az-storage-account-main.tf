@@ -33,3 +33,10 @@ resource "azurerm_storage_account" "static_storage" {
     product = var.product
   }
 }
+
+resource "azurerm_management_lock" "rg" {
+  name       = "rg-lock"
+  scope      = azurerm_resource_group.rg.id
+  lock_level = "CanNotDelete"
+  notes      = "Locked for compliance"
+}
